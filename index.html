@@ -3,91 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHANGSHAIYA | Global Heritage Enterprise</title>
+    <title>Amazon.in - SHANGSHAIYA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #722f37; --amazon-blue: #232f3e; --amazon-orange: #febd69; --bg: #fffcf5; }
-        body { font-family: 'Georgia', serif; margin: 0; padding: 0; background: var(--bg); padding-bottom: 70px; }
-        
-        /* Amazon Header */
-        .app-header { background: var(--amazon-blue); padding: 12px; display: flex; flex-direction: column; gap: 10px; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .search-row { display: flex; width: 100%; max-width: 600px; }
-        .search-input { flex: 1; padding: 12px; border-radius: 4px 0 0 4px; border: none; outline: none; }
-        .search-btn { background: var(--amazon-orange); border: none; padding: 0 15px; border-radius: 0 4px 4px 0; cursor: pointer; }
-        
-        /* Buttons */
-        .scan-btn { background: #f1c40f; color: #333; border: none; padding: 12px; font-weight: bold; border-radius: 5px; width: 100%; max-width: 600px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
-        /* Language Bar */
-        .top-bar { background: #1a1a1a; color: white; padding: 8px 15px; display: flex; justify-content: space-between; font-size: 0.75rem; }
-        
-        /* Branding */
-        .hero { background: linear-gradient(rgba(114, 47, 55, 0.9), rgba(114, 47, 55, 0.9)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800'); background-size: cover; color: white; text-align: center; padding: 40px 20px; }
+        :root {
+            --amazon-dark: #232f3e;
+            --amazon-light: #37475a;
+            --amazon-orange: #febd69;
+            --amazon-bg: #eaeded;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--amazon-bg); padding-bottom: 60px; }
 
-        /* Product Cards */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
-        .card { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px; border: 1px solid #eee; }
-        .price { font-size: 1.5rem; color: #333; font-weight: bold; }
-        .order-btn { background: #27ae60; color: white; border: none; width: 100%; padding: 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        /* TOP NAVIGATION (Amazon Header) */
+        header { background-color: var(--amazon-dark); padding: 10px; color: white; position: sticky; top: 0; z-index: 1000; }
+        .nav-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .logo { font-weight: bold; font-size: 1.5rem; color: white; text-decoration: none; }
+        .logo span { color: var(--amazon-orange); }
 
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #ddd; z-index: 1001; }
-        .nav-item { text-align: center; color: #333; text-decoration: none; font-size: 0.7rem; }
-        .nav-item i { font-size: 1.2rem; display: block; margin-bottom: 3px; }
+        /* SEARCH BAR */
+        .search-container { display: flex; width: 100%; height: 45px; }
+        .search-input { flex: 1; border: none; padding: 10px; border-radius: 4px 0 0 4px; font-size: 1rem; }
+        .search-btn { background-color: var(--amazon-orange); border: none; width: 50px; border-radius: 0 4px 4px 0; cursor: pointer; font-size: 1.2rem; }
+
+        /* SCAN BUTTON (AGENT ACCESS) */
+        .scan-bar { background-color: var(--amazon-light); padding: 8px; text-align: center; }
+        .scan-link { color: #00e7ff; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
+
+        /* IMAGE BANNER */
+        .banner { width: 100%; height: 200px; background: linear-gradient(to bottom, transparent, var(--amazon-bg)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800'); background-size: cover; background-position: center; }
+
+        /* PRODUCT GRID */
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; margin-top: -50px; }
+        .product-card { background: white; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; border-radius: 4px; height: 120px; object-fit: cover; }
+        .product-title { font-size: 0.9rem; margin: 8px 0; height: 40px; overflow: hidden; }
+        .price { font-size: 1.2rem; font-weight: bold; color: #B12704; }
+        .buy-btn { background: #ffd814; border: 1px solid #fcd200; border-radius: 20px; width: 100%; padding: 8px; margin-top: 10px; cursor: pointer; font-size: 0.8rem; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ddd; }
+        .nav-item { color: var(--amazon-dark); text-decoration: none; text-align: center; font-size: 0.7rem; }
+        .nav-item i { font-size: 1.4rem; display: block; }
     </style>
 </head>
 <body>
 
-    <div class="app-header">
-        <div class="search-row">
-            <input type="text" class="search-input" placeholder="Search SHANGSHAIYA...">
+    <header>
+        <div class="nav-top">
+            <a href="#" class="logo">shang<span>shaiya</span></a>
+            <div style="font-size: 0.8rem;">Sign in ></div>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search SHANGSHAIYA.in">
             <button class="search-btn"><i class="fa fa-search"></i></button>
         </div>
-        <a href="login.html" style="width: 100%; text-align: center;">
-            <button class="scan-btn">📸 SCAN PRODUCT QR (AGENT ONLY)</button>
-        </a>
+    </header>
+
+    <div class="scan-bar">
+        <a href="login.html" class="scan-link">📸 AGENT LOGIN: SCAN PRODUCT QR</a>
     </div>
 
-    <div class="top-bar">
-        <div>English | Dimasa | Assamese</div>
-        <div>HAFLONG | 2026</div>
-    </div>
+    <div class="banner"></div>
 
-    <div class="hero">
-        <h1>SHANGSHAIYA</h1>
-        <p>Indigenous Silk • Organic Hill Produce • Legal Heritage Export</p>
-    </div>
-
-    <div style="background: white; margin: 20px; padding: 15px; border-radius: 8px; border-left: 5px solid #f1c40f;">
-        <h3 style="margin-top:0;">🏆 Top Performers (Monthly)</h3>
-        <div style="display:flex; justify-content:space-between;"><span>#1 Agent Raktim</span> <span>₹18,500</span></div>
-        <div style="display:flex; justify-content:space-between; margin-top:5px;"><span>#2 Agent Priya</span> <span>₹12,200</span></div>
-    </div>
-
-    <div class="product-grid">
-        <div class="card">
-            <span style="background:#722f37; color:white; padding:2px 8px; border-radius:10px; font-size:0.7rem;">Textile</span>
-            <h3>Indigenous Eri Silk</h3>
-            <div class="price">₹3500</div>
-            <p style="font-size:0.8rem; color:666;">Dyeing: Indigo/Bark<br>Legal: Global Export Ready</p>
-            <button class="order-btn">ORDER VIA WHATSAPP</button>
+    <div class="product-grid" id="productGrid">
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1610116303218-1f310de40764?w=400" alt="Silk">
+            <div class="product-title">Premium Indigenous Eri Silk - Hand Dyed</div>
+            <div class="price">₹3,500</div>
+            <button class="buy-btn" onclick="alert('Added to Cart')">Add to Cart</button>
         </div>
-
-        <div class="card">
-            <span style="background:#27ae60; color:white; padding:2px 8px; border-radius:10px; font-size:0.7rem;">FSSAI CERTIFIED</span>
-            <h3>Haflong King Chilli</h3>
-            <div class="price">₹200</div>
-            <p style="font-size:0.8rem; color:666;">Organic Hill Produce<br>Restricted (Check Permits)</p>
-            <button class="order-btn">ORDER VIA WHATSAPP</button>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=400" alt="Chilli">
+            <div class="product-title">Haflong King Chilli (Bhut Jolokia) 100g</div>
+            <div class="price">₹249</div>
+            <button class="buy-btn" onclick="alert('Added to Cart')">Add to Cart</button>
         </div>
     </div>
 
-    <div class="bottom-nav">
+    <nav class="bottom-nav">
         <a href="index.html" class="nav-item"><i class="fa fa-home"></i>Home</a>
-        <a href="#" class="nav-item"><i class="fa fa-th-large"></i>Items</a>
         <a href="login.html" class="nav-item"><i class="fa fa-user"></i>Account</a>
         <a href="#" class="nav-item"><i class="fa fa-shopping-cart"></i>Cart</a>
-    </div>
+        <a href="#" class="nav-item"><i class="fa fa-bars"></i>Menu</a>
+    </nav>
 
+    <script>
+        // SCRIPT TO LOAD PRODUCTS FROM YOUR ADMIN PANEL
+        window.onload = function() {
+            const adminProducts = JSON.parse(localStorage.getItem("myProducts") || "[]");
+            const grid = document.getElementById("productGrid");
+            
+            adminProducts.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "product-card";
+                card.innerHTML = `
+                    <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400" alt="New Item">
+                    <div class="product-title">${p.name}</div>
+                    <div class="price">${p.price}</div>
+                    <button class="buy-btn">Add to Cart</button>
+                `;
+                grid.appendChild(card);
+            });
+        };
+    </script>
 </body>
 </html>
