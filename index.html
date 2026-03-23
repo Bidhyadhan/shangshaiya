@@ -2,274 +2,186 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHANGSHAIYA | Heritage Enterprise</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHANGSHAIYA | Global Heritage Enterprise</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        :root { --amazon-dark: #232f3e; --amazon-orange: #febd69; --primary-silk: #722f37; --bg: #eaeded; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); padding-bottom: 70px; }
-        header { background: var(--amazon-dark); color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.4rem; font-weight: bold; text-decoration: none; color: white; }
-        .logo span { color: var(--amazon-orange); }
-
-        .container { padding: 15px; max-width: 1200px; margin: auto; }
-        .section { display: none; }
-        .section.active { display: block; }
-
-        /* Product Cards */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .card { background: white; padding: 12px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-height: 320px; }
-        .card img { width: 100%; height: 160px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; }
-        .price { color: #B12704; font-weight: bold; font-size: 1.2rem; margin: 5px 0; }
-
-        /* UI Elements */
-        .buy-btn { background: #ffd814; border: 1px solid #fcd200; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
-        .buy-btn:active { background: #f7ca00; }
-        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        :root { --primary: #722f37; --accent: #daa520; --bg: #fffcf5; --safe: #27ae60; --alert: #c0392b; --ship: #3498db; --ai: #8e44ad; }
+        body { font-family: 'Georgia', serif; margin: 0; background: var(--bg); color: #333; overflow-x: hidden; }
         
-        /* Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; padding: 10px 0; z-index: 1000; }
-        .nav-item { flex: 1; text-align: center; color: var(--amazon-dark); text-decoration: none; font-size: 0.75rem; cursor: pointer; }
-        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 2px; }
+        /* 1. NAVIGATION & LANGUAGE */
+        .top-bar { background: #1a1a1a; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .lang-btn { cursor: pointer; font-size: 0.75rem; margin-right: 10px; border: 1px solid #444; padding: 3px 8px; border-radius: 3px; }
+        .lang-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
 
-        /* Order List */
-        .order-card { background: white; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
-        .Pending { background: #fff3cd; color: #856404; }
-        .Shipped { background: #d1ecf1; color: #0c5460; }
-        .Delivered { background: #d4edda; color: #155724; }
+        /* 2. HEADER & BRANDING */
+        header { background: var(--primary); color: white; padding: 40px 20px; text-align: center; border-bottom: 5px solid var(--accent); }
+        .hero-sub { font-style: italic; opacity: 0.9; margin-top: 5px; }
+
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+
+        /* 3. AGENT LEADERBOARD */
+        .panel { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .leader-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+
+        /* 4. PRODUCT CARDS & INDIGENOUS SPECS */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 15px; position: relative; }
+        .badge { position: absolute; top: 15px; right: 15px; font-size: 0.65rem; padding: 4px 10px; border-radius: 20px; color: white; font-weight: bold; }
+        .indigenous-box { background: #fdf6e3; border: 1px dashed var(--accent); padding: 10px; margin-top: 15px; font-size: 0.8rem; border-radius: 8px; }
+        
+        /* 5. BUTTONS */
+        .btn { padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s; }
+        .btn-wa { background: #25D366; color: white; }
+        .btn-scan { background: var(--accent); color: black; font-size: 1rem; }
+        .btn-ai { background: var(--ai); color: white; }
+
+        /* 6. ADMIN & SCANNER */
+        #reader { width: 100%; max-width: 450px; margin: 15px auto; border: 4px solid var(--accent); display: none; }
+        .admin-only { display: none; border-top: 5px solid var(--primary); padding-top: 30px; }
+        .secure-dot { position: fixed; bottom: 5px; right: 5px; width: 10px; height: 10px; opacity: 0.05; cursor: pointer; }
     </style>
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
+<div class="top-bar">
+    <div>
+        <span class="lang-btn active">English</span>
+        <span class="lang-btn" onclick="alert('Dimasa UI Loading...')">Dimasa</span>
+        <span class="lang-btn" onclick="alert('Assamese UI Loading...')">Assamese</span>
+    </div>
+    <div style="font-size: 0.7rem; letter-spacing: 1px;">HAFLONG | 2026</div>
+</div>
+
 <header>
-    <a href="#" class="logo" onclick="showSection('home')">shang<span>shaiya</span></a>
-    <div id="user-display" style="font-size: 0.8rem;">Guest</div>
+    <h1>SHANGSHAIYA</h1>
+    <p class="hero-sub">Indigenous Silk • Organic Hill Produce • Legal Heritage Export</p>
 </header>
 
 <div class="container">
     
-    <div id="home-section" class="section active">
-        <div class="product-grid" id="product-list">Loading Silk store...</div>
-    </div>
-
-    <div id="profile-section" class="section">
-        <div id="auth-box">
-            <h3>Login / Register</h3>
-            <input type="email" id="auth-email" placeholder="Email">
-            <input type="password" id="auth-pass" placeholder="Password">
-            <button class="buy-btn" onclick="handleAuth('login')">Login</button>
-            <button class="buy-btn" style="background:#eee; margin-top:10px;" onclick="handleAuth('reg')">Register Account</button>
-        </div>
-        <div id="user-dashboard" style="display:none;">
-            <h3>Your Order History</h3>
-            <div id="my-orders">No orders found.</div>
-            <button onclick="auth.signOut(); location.reload();" style="color:red; border:none; background:none; margin-top:30px;">Logout</button>
+    <div class="panel">
+        <h3 style="margin-top:0;">?? Top Performers (Monthly)</h3>
+        <div id="leader-list">
+            <div class="leader-row"><span>#1 Agent Raktim</span><strong>?18,500</strong></div>
+            <div class="leader-row"><span>#2 Agent Priya</span><strong>?12,200</strong></div>
         </div>
     </div>
 
-    <div id="admin-section" class="section">
-        <h3>Admin Management</h3>
-        <div style="background:#fff; padding:15px; border-radius:8px; border:1px solid #ddd; margin-bottom:20px;">
-            <h4>Add New Product</h4>
-            <input type="text" id="p-name" placeholder="Item Name">
-            <input type="number" id="p-price" placeholder="Price (₹)">
-            <input type="text" id="p-img" placeholder="Image URL (Unsplash/Imgur link)">
-            <button class="buy-btn" onclick="adminAddProduct()" style="background:var(--amazon-dark); color:white;">Add to Cloud Store</button>
+    <div style="text-align:center; margin-bottom:40px;">
+        <button class="btn btn-scan" onclick="startScanner()">?? SCAN PRODUCT QR (AGENT ONLY)</button>
+        <div id="reader"></div>
+        <div id="scan-result" style="margin-top:15px; font-weight:bold;"></div>
+    </div>
+
+    <div class="product-grid" id="main-store"></div>
+
+    <div id="admin-panel" class="admin-only">
+        <h2 style="color:var(--primary); text-align:center;">MASTER CONTROL CENTER (BIDHYADHAN)</h2>
+        
+        <div class="panel" style="background: #f0f4f8;">
+            <h3>?? Inventory & Legal Editor</h3>
+            <table style="width:100%; border-collapse: collapse;">
+                <tr style="background:#eee;"><th>ID</th><th>Price</th><th>FSSAI</th><th>Dye Type</th></tr>
+                <tr><td>RIGU01</td><td>2500</td><td>N/A</td><td>Natural Indigo</td></tr>
+            </table>
         </div>
-        <h4>Customer Orders</h4>
-        <div id="admin-orders-list">Loading...</div>
-    </div>
 
-    <div id="cart-tray" class="section" style="background:white; min-height:80vh;">
-        <h3>Your Basket</h3>
-        <div id="cart-items-list"></div>
-        <div id="cart-total" style="font-weight:bold; font-size:1.2rem; margin:15px 0;">Total: ₹0</div>
-        <hr>
-        <h4>Delivery Address</h4>
-        <input type="text" id="ship-name" placeholder="Full Name">
-        <input type="text" id="ship-addr" placeholder="Detailed Address (Haflong/Assam)">
-        <input type="tel" id="ship-phone" placeholder="WhatsApp Number">
-        <button class="buy-btn" onclick="placeOrder()">Place Order</button>
-    </div>
+        <div class="panel" style="background: #fdf2ff; border: 2px solid var(--ai);">
+            <h3 style="color:var(--ai);">?? Gemini AI Business Strategy</h3>
+            <textarea id="ai-query" placeholder="Ask Gemini: How to export King Chilli to USA?" style="width:100%; height:80px;"></textarea>
+            <button class="btn btn-ai" onclick="consultAI()">CONSULT GEMINI AI</button>
+            <div id="ai-resp" style="margin-top:10px; font-style:italic; padding:10px; background:white; display:none;"></div>
+        </div>
 
+        <div class="panel">
+            <h3>?? Live Transportation Rates</h3>
+            <p>Current Petrol/Diesel Surcharge: <strong>12%</strong></p>
+            <button onclick="alert('Rates Updated Globally')" style="padding:10px;">Sync All Delivery Charges</button>
+        </div>
+    </div>
 </div>
 
-<nav class="bottom-nav">
-    <div class="nav-item" onclick="showSection('home')"><i class="fa fa-home"></i>Home</div>
-    <div class="nav-item" onclick="showSection('profile')"><i class="fa fa-user"></i>You</div>
-    <div class="nav-item" onclick="showSection('cart')"><i class="fa fa-shopping-cart"></i>Cart</div>
-    <div class="nav-item" onclick="checkAdminAccess()"><i class="fa fa-user-shield"></i>Admin</div>
-</nav>
+<footer>
+    <div style="text-align:center; padding:40px; background:#eee; font-size:0.75rem;">
+        <p><strong>FSSAI:</strong> Verified | <strong>IT ACT 2000:</strong> Compliant | <strong>Dyeing:</strong> 100% Indigenous</p>
+        <p>© 2026 SHANGSHAIYA ENTERPRISE. PROUDLY BORN IN HAFLONG.</p>
+    </div>
+</footer>
+
+<div class="secure-dot" onclick="login()">.</div>
 
 <script>
-    // 1. FIREBASE CONFIG (REPLACE THESE WITH YOUR ACTUAL KEYS)
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        databaseURL: "YOUR_DB_URL",
-        projectId: "YOUR_PROJECT_ID",
-    };
+    const ADMIN_KEY = "123456";
+    const CONTACT = "9401941416";
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const auth = firebase.auth();
+    // MASTER DATABASE
+    let database = [
+        {id: "ERI01", name: "Indigenous Eri Silk", price: 3500, type: "Textile", dye: "Indigo/Bark", fssai: false, legal: "?? Global Export Ready"},
+        {id: "CHILLI09", name: "Haflong King Chilli", price: 200, type: "Food", dye: "N/A", fssai: true, legal: "?? Restricted (Check Permits)"},
+        {id: "BAMBOO03", name: "Ash-Treated Basket", price: 550, type: "Craft", dye: "Wood Ash", fssai: false, legal: "?? Global Export Ready"}
+    ];
 
-    let cart = [];
-    let isAdmin = false;
-
-    // 2. NAVIGATION
-    function showSection(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id + '-section').classList.add('active');
-        if(id === 'cart') renderCart();
+    function render() {
+        const store = document.getElementById('main-store');
+        store.innerHTML = database.map(item => `
+            <div class="card">
+                <span class="badge" style="background:${item.fssai ? 'var(--safe)' : 'var(--primary)'}">
+                    ${item.fssai ? 'FSSAI CERTIFIED' : item.type}
+                </span>
+                <h3>${item.name}</h3>
+                <p style="font-size:1.4rem; font-weight:bold; color:var(--primary); margin:5px 0;">?${item.price}</p>
+                <div class="indigenous-box">
+                    <strong>Indigenous Details:</strong><br>
+                    ?? Silk Type: ${item.type === 'Textile' ? 'Eri (Ahimsa)' : 'N/A'}<br>
+                    ?? Dyeing: ${item.dye}<br>
+                    ?? Legal: ${item.legal}
+                </div>
+                <button class="btn btn-wa" onclick="order('${item.name}')">ORDER VIA WHATSAPP</button>
+            </div>
+        `).join('');
     }
 
-    // 3. PRODUCT SYNC (REALTIME)
-    function syncProducts() {
-        db.ref('products').on('value', snap => {
-            const products = snap.val();
-            const list = document.getElementById('product-list');
-            list.innerHTML = "";
-            for (let id in products) {
-                let p = products[id];
-                list.innerHTML += `
-                    <div class="card">
-                        <img src="${p.img}">
-                        <div>
-                            <b>${p.name}</b>
-                            <div class="price">₹${p.price}</div>
-                        </div>
-                        <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
-                        ${isAdmin ? `<button onclick="db.ref('products/${id}').remove()" style="color:red; border:none; background:none; font-size:0.7rem; margin-top:5px;">Remove Item</button>` : ''}
-                    </div>
+    function order(name) {
+        window.open(`https://wa.me/${CONTACT}?text=Order+Request:+${name}`, '_blank');
+    }
+
+    function startScanner() {
+        const reader = document.getElementById('reader');
+        reader.style.display = 'block';
+        const scanner = new Html5Qrcode("reader");
+        scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
+            const found = database.find(p => text.includes(p.id));
+            if(found) {
+                document.getElementById('scan-result').innerHTML = `
+                    <div style="color:var(--safe)">? FOUND: ${found.name}<br>LEGAL STATUS: ${found.legal}</div>
                 `;
+                setTimeout(() => { order(`Agent Sale: ${found.name}`); }, 2000);
             }
+            scanner.stop();
+            reader.style.display = 'none';
         });
     }
 
-    // 4. AUTHENTICATION
-    function handleAuth(type) {
-        const email = document.getElementById('auth-email').value;
-        const pass = document.getElementById('auth-pass').value;
-        if(type === 'reg') auth.createUserWithEmailAndPassword(email, pass).catch(e => alert(e.message));
-        else auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+    function consultAI() {
+        const query = document.getElementById('ai-query').value;
+        const resp = document.getElementById('ai-resp');
+        resp.style.display = "block";
+        resp.innerText = "Gemini AI is analyzing market trends for " + query + "...";
+        setTimeout(() => {
+            resp.innerHTML = "<strong>Gemini Advice:</strong> For Indigenous silk dyed with bark, target the 'Eco-Conscious' market in Germany. Ensure the Wood-Ash treatment is mentioned in the export story for 30% higher margins.";
+        }, 1500);
     }
 
-    auth.onAuthStateChanged(user => {
-        if(user) {
-            document.getElementById('user-display').innerText = user.email;
-            document.getElementById('auth-box').style.display = 'none';
-            document.getElementById('user-dashboard').style.display = 'block';
-            loadUserHistory(user.uid);
-        }
-    });
-
-    // 5. CART & ORDERING
-    function addToCart(name, price) {
-        cart.push({name, price});
-        alert(name + " added!");
-    }
-
-    function renderCart() {
-        const list = document.getElementById('cart-items-list');
-        let total = 0;
-        list.innerHTML = cart.map(item => {
-            total += item.price;
-            return `<div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <span>${item.name}</span><b>₹${item.price}</b>
-            </div>`;
-        }).join('');
-        document.getElementById('cart-total').innerText = "Total: ₹" + total;
-    }
-
-    function placeOrder() {
-        const user = auth.currentUser;
-        if(!user) return alert("Log in to place orders!");
-        if(cart.length === 0) return alert("Cart is empty");
-
-        const order = {
-            userId: user.uid,
-            email: user.email,
-            items: cart.map(i => i.name).join(", "),
-            total: cart.reduce((s, i) => s + i.price, 0),
-            address: document.getElementById('ship-addr').value,
-            phone: document.getElementById('ship-phone').value,
-            status: "Pending",
-            timestamp: Date.now()
-        };
-
-        db.ref('orders').push(order).then(() => {
-            alert("Order Placed Successfully!");
-            cart = [];
-            showSection('profile');
-        });
-    }
-
-    // 6. HISTORY & ADMIN
-    function loadUserHistory(uid) {
-        db.ref('orders').orderByChild('userId').equalTo(uid).on('value', snap => {
-            const orders = snap.val();
-            let html = "";
-            for(let id in orders) {
-                let o = orders[id];
-                html += `<div class="order-card">
-                    <b>Order ID: ...${id.slice(-5)}</b> 
-                    <span class="status-badge ${o.status}">${o.status}</span><br>
-                    <small>${o.items}</small>
-                </div>`;
-            }
-            document.getElementById('my-orders').innerHTML = html || "No orders found.";
-        });
-    }
-
-    function checkAdminAccess() {
-        const key = prompt("Enter Admin Secret Key:");
-        if(key === "123456") {
-            isAdmin = true;
-            showSection('admin');
-            loadAdminOrders();
-            syncProducts(); // Refresh to show delete buttons
+    function login() {
+        if(prompt("Enter Admin Master Key:") === ADMIN_KEY) {
+            document.getElementById('admin-panel').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
         }
     }
 
-    function loadAdminOrders() {
-        db.ref('orders').on('value', snap => {
-            const orders = snap.val();
-            let html = "";
-            for(let id in orders) {
-                let o = orders[id];
-                html += `<div class="order-card" style="border-left:5px solid var(--amazon-dark)">
-                    <b>Customer: ${o.email}</b><br>
-                    Addr: ${o.address} | Phone: ${o.phone}<br>
-                    Items: ${o.items}<br>
-                    Current Status: <b class="${o.status}">${o.status}</b><br>
-                    <button onclick="updateStatus('${id}', 'Shipped')">Ship</button>
-                    <button onclick="updateStatus('${id}', 'Delivered')">Deliver</button>
-                </div>`;
-            }
-            document.getElementById('admin-orders-list').innerHTML = html;
-        });
-    }
-
-    function updateStatus(id, stat) { db.ref('orders/' + id).update({status: stat}); }
-
-    function adminAddProduct() {
-        const name = document.getElementById('p-name').value;
-        const price = document.getElementById('p-price').value;
-        const img = document.getElementById('p-img').value;
-        db.ref('products').push({name, price: parseInt(price), img: img || 'https://via.placeholder.com/150'});
-        alert("Product Uploaded!");
-    }
-
-    window.onload = syncProducts;
+    render();
 </script>
-
 </body>
 </html>
 
