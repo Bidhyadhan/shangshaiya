@@ -1,121 +1,80 @@
-<script>
-    const API_URL = "http://localhost:5000/api";
-    const WHATSAPP = "9401941416";
-    const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
-    
-    let database = [];
-    let cart = JSON.parse(localStorage.getItem('shang_cart')) || [];
-    let activeCategory = 'All';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import Barcode from 'react-native-barcode-builder';
 
-    // FETCH DATA FROM MONGODB
-    async function initApp() {
-        try {
-            const res = await fetch(`${API_URL}/products`);
-            database = await res.json();
-            render();
-            updateCartUI();
-        } catch (e) { console.error("Offline"); }
-    }
+const DigitalInvoice = ({ order }) => {
+  return (
+    <ScrollView style={styles.invoiceWrapper}>
+      <View style={styles.receiptCard}>
+        {/* Header */}
+        <Text style={styles.brandName}>SHANGSHAIYA SPORTS</Text>
+        <Text style={styles.storeInfo}>Store #402 - Downtown</Text>
+        <View style={styles.divider} />
 
-    // RENDER STOREFRONT
-    function render() {
-        const store = document.getElementById('main-store');
-        const q = document.getElementById('searchBar').value.toLowerCase();
+        {/* Order Info */}
+        <View style={styles.row}>
+          <Text style={styles.label}>Order ID:</Text>
+          <Text style={styles.value}>{order.id}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Date:</Text>
+          <Text style={styles.value}>{order.date}</Text>
+        </View>
         
-        let filtered = database.filter(i => 
-            i.visible && i.name.toLowerCase().includes(q) && 
-            (activeCategory === 'All' || i.type === activeCategory)
-        );
+        <View style={styles.divider} />
 
-        store.innerHTML = filtered.map(item => `
-            <div class="card">
-                <img src="${item.image}" class="product-img" loading="lazy">
-                <div class="card-info">
-                    <div class="card-category">${item.type}</div>
-                    <div class="card-title">${item.name}</div>
-                    <div class="card-price">${formatter.format(item.price)}</div>
-                    <button class="btn-buy" ${item.stock <= 0 ? 'disabled' : ''} onclick="addToCart('${item.id}')">
-                        ${item.stock <= 0 ? 'SOLD OUT' : 'ADD TO CART'}
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
+        {/* Items List */}
+        {order.items.map((item, index) => (
+          <View key={index} style={styles.itemRow}>
+            <Text style={styles.itemName}>{item.qty}x {item.name}</Text>
+            <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+          </View>
+        ))}
 
-    // SYNC PURCHASE TO MONGODB
-    async function addToCart(id) {
-        const res = await fetch(`${API_URL}/products/${id}/buy`, { method: 'PATCH' });
-        if(res.ok) {
-            const updated = await res.json();
-            cart.push(updated);
-            localStorage.setItem('shang_cart', JSON.stringify(cart));
-            initApp(); // Refresh view
-        }
-    }
+        <View style={styles.thickDivider} />
 
-    // ADMIN: SAVE CHANGES TO MONGODB
-    async function updateField(id, field, val) {
-        const body = {};
-        body[field] = field === 'price' ? parseInt(val) : val;
-        
-        await fetch(`${API_URL}/products/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        initApp();
-    }
+        {/* Total */}
+        <View style={styles.row}>
+          <Text style={styles.totalLabel}>TOTAL</Text>
+          <Text style={styles.totalAmount}>${order.total.toFixed(2)}</Text>
+        </View>
 
-    initApp();
-</script>const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
+        {/* Scan for Return */}
+        <View style={styles.barcodeSection}>
+          <Text style={styles.barcodeText}>Scan for Returns & Warranty</Text>
+          <Barcode value={order.id} format="CODE128" height={50} />
+          <Text style={styles.smallText}>Present this to a store teammate</Text>
+        </View>
+      </View>
+    </ScrollView>
+  );
+};
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-// 1. DATABASE CONNECTION
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log("✨ Connected to SHANGSHAIYA MongoDB"))
-    .catch(err => console.error("❌ Connection error:", err));
-
-// 2. PRODUCT SCHEMA
-const productSchema = new mongoose.Schema({
-    id: { type: String, unique: true },
-    name: String,
-    price: Number,
-    type: String,
-    stock: { type: Number, default: 15 },
-    visible: { type: Boolean, default: true },
-    artisan: String,
-    story: String,
-    image: String
+const styles = StyleSheet.create({
+  invoiceWrapper: { flex: 1, backgroundColor: '#f4f4f4', padding: 15 },
+  receiptCard: { 
+    backgroundColor: 'white', 
+    padding: 20, 
+    borderRadius: 8, 
+    shadowColor: '#000', 
+    shadowOpacity: 0.1, 
+    elevation: 3 
+  },
+  brandName: { fontSize: 22, fontWeight: '900', textAlign: 'center', color: '#007ABD' },
+  storeInfo: { fontSize: 12, textAlign: 'center', color: '#666', marginBottom: 10 },
+  divider: { height: 1, backgroundColor: '#eee', marginVertical: 10 },
+  thickDivider: { height: 2, backgroundColor: '#333', marginVertical: 15 },
+  row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 },
+  label: { color: '#888' },
+  value: { fontWeight: '600' },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4 },
+  itemName: { fontSize: 14, flex: 1 },
+  itemPrice: { fontSize: 14, fontWeight: '500' },
+  totalLabel: { fontSize: 18, fontWeight: 'bold' },
+  totalAmount: { fontSize: 18, fontWeight: 'bold', color: '#007ABD' },
+  barcodeSection: { alignItems: 'center', marginTop: 30, paddingTop: 20, borderTopWidth: 1, borderTopColor: '#eee', borderStyle: 'dashed' },
+  barcodeText: { fontSize: 14, fontWeight: 'bold', marginBottom: 10 },
+  smallText: { fontSize: 10, color: '#999', marginTop: 5 }
 });
 
-const Product = mongoose.model('Product', productSchema);
-
-// 3. API ROUTES
-app.get('/api/products', async (req, res) => {
-    const products = await Product.find({});
-    res.json(products);
-});
-
-// Update stock on purchase
-app.patch('/api/products/:id/buy', async (req, res) => {
-    const product = await Product.findOneAndUpdate(
-        { id: req.params.id, stock: { $gt: 0 } },
-        { $inc: { stock: -1 } },
-        { new: true }
-    );
-    res.json(product || { error: "Out of stock" });
-});
-
-// Admin update (Price/Visibility)
-app.put('/api/products/:id', async (req, res) => {
-    const updated = await Product.findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
-    res.json(updated);
-});
-
-app.listen(5000, () => console.log("🚀 Server: http://localhost:5000"));
+export default DigitalInvoice;
