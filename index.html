@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHANGSHAIYA | Luxury Heritage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHANGSHAIYA | Heritage Luxury</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
         :root { 
@@ -14,340 +13,149 @@
             --accent: #c5a059;  
             --bg: #fdfaf5;      
             --text: #1a1a1a;
-            --glass: rgba(255, 255, 255, 0.8);
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         body { 
             font-family: 'Inter', sans-serif; 
             margin: 0; 
             background: var(--bg); 
             color: var(--text);
-            background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
-            background-size: 20px 20px;
-            overflow-x: hidden;
         }
 
-        /* ADMIN & UI ELEMENTS */
-        .admin-dot { position: absolute; top: 15px; right: 15px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; opacity: 0.1; z-index: 5000; cursor: pointer; }
-        #pull-loader { width: 100%; height: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: height 0.3s; }
-        .spinner { width: 24px; height: 24px; border: 3px solid rgba(197, 160, 89, 0.2); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* HEADER & NAVIGATION */
+        header { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--primary); margin: 0; }
+        .nav-bar { position: sticky; top: 0; background: white; padding: 15px; display: flex; justify-content: center; gap: 20px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .nav-bar input { padding: 10px; width: 300px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
 
-        /* HEADER & NAV */
-        header { padding: 40px 20px 10px; position: relative; }
-        header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; margin: 0 0 0 35px; color: var(--primary); letter-spacing: -1px; }
-        .subtitle { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); font-weight: 600; margin-left: 35px; }
+        /* PRODUCT GRID */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 40px 20px; max-width: 1200px; margin: auto; }
+        .card { background: white; border-radius: 15px; overflow: hidden; transition: transform 0.3s; border: 1px solid #eee; }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .card-info { padding: 20px; }
+        .card-price { color: var(--primary); font-weight: 700; font-size: 1.2rem; }
 
-        .menu-toggle { position: absolute; top: 45px; left: 20px; z-index: 2100; cursor: pointer; }
-        .hamburger-line { width: 22px; height: 2px; background: var(--primary); margin: 5px 0; transition: 0.3s; }
-
-        .side-menu { position: fixed; top: 0; left: -100%; width: 80%; max-width: 300px; height: 100%; background: var(--bg); z-index: 2050; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 100px 30px; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
-        .side-menu.active { left: 0; }
-        .side-menu h3 { font-family: 'Playfair Display'; color: var(--accent); margin: 20px 0 10px; }
-        .side-menu a { display: block; color: var(--primary); text-decoration: none; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px; }
-
-        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: none; z-index: 2040; backdrop-filter: blur(2px); }
-        .menu-overlay.active { display: block; }
-
-        /* SEARCH & GRID */
-        .nav-pill { position: sticky; top: 15px; margin: 0 15px 10px; background: rgba(26, 26, 26, 0.9); backdrop-filter: blur(10px); border-radius: 50px; padding: 8px 15px; display: flex; align-items: center; z-index: 1000; }
-        #searchBar { background: transparent; border: none; color: white; padding: 10px; width: 100%; outline: none; }
-
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px 15px 120px; }
-        .card { background: var(--glass); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: transform 0.3s; }
-        .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 20px; padding: 5px; }
-        .card-info { padding: 12px; }
-        .card-category { font-size: 0.6rem; text-transform: uppercase; color: var(--accent); font-weight: bold; }
-        .card-title { font-size: 0.9rem; margin: 5px 0; font-weight: 600; min-height: 2.2em; }
-        .card-price { font-size: 1rem; font-weight: 700; color: var(--primary); margin: 8px 0; }
-
-        /* BUTTONS & MODALS */
-        .btn-buy { width: 100%; padding: 10px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
-        .btn-buy:disabled { background: #ccc; }
-
-        #story-modal, #scanner-modal, #cart-modal, #admin-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--bg); width: 100%; max-width: 380px; border-radius: 30px; overflow-y: auto; max-height: 85vh; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* FABs */
-        #cart-fab { position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--text); color: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 600; display: none; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        #backToTop { position: fixed; bottom: 95px; right: 20px; width: 45px; height: 45px; background: var(--glass); border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        /* ADMIN & BUTTONS */
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; margin-top: 10px; }
+        .btn-secondary { background: var(--accent); }
         
-        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .animate-pop { animation: pop 0.3s ease; }
+        .admin-panel { max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 20px; border: 1px dashed var(--accent); }
+        .auth-status { position: absolute; top: 20px; right: 20px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<div class="admin-dot" onclick="openAdmin()"></div>
-
-<div id="pull-loader"><div class="spinner"></div></div>
-
-<div class="menu-toggle" onclick="toggleMenu()">
-    <div class="hamburger-line"></div>
-    <div class="hamburger-line" style="width: 15px;"></div>
-    <div class="hamburger-line"></div>
+<div class="auth-status" id="authStatus">
+    <button onclick="showLoginPrompt()">Login</button>
 </div>
-
-<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-
-<nav class="side-menu" id="sideMenu">
-    <h3>Categories</h3>
-    <a href="#" onclick="filterByCategory('All')">All Products</a>
-    <a href="#" onclick="filterByCategory('Textile')">Textiles</a>
-    <a href="#" onclick="filterByCategory('Food')">Food & Spices</a>
-    <a href="#" onclick="filterByCategory('Handicraft')">Handicraft</a>
-    <h3>Sort By</h3>
-    <a href="#" onclick="setSort('low')">Price: Low to High</a>
-    <a href="#" onclick="setSort('high')">Price: High to Low</a>
-    <a href="#" onclick="setSort('new')">Newest Arrivals</a>
-</nav>
 
 <header>
-    <div class="subtitle">Haflong Heritage</div>
     <h1>SHANGSHAIYA</h1>
+    <p style="letter-spacing: 3px; color: var(--accent);">HAFLONG HERITAGE</p>
 </header>
 
-<div class="nav-pill">
-    <input type="text" id="searchBar" placeholder="Search collection..." onkeyup="render()">
-    <div onclick="startScanner()" style="color:var(--accent); font-size: 1.2rem; margin-left:10px;">📸</div>
+<div class="nav-bar">
+    <input type="text" id="searchBar" placeholder="Search collection..." onkeyup="filterProducts()">
+    <select id="categoryFilter" onchange="filterProducts()">
+        <option value="All">All Categories</option>
+        <option value="Textile">Textiles</option>
+        <option value="Handicraft">Handicrafts</option>
+        <option value="Food">Food & Spices</option>
+    </select>
 </div>
 
-<div id="filter-indicator" style="display: none; padding: 0 20px 10px; align-items: center; gap: 10px;">
-    <span id="active-tag" style="background: var(--accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600;"></span>
-    <span onclick="filterByCategory('All')" style="font-size: 0.7rem; color: var(--primary); text-decoration: underline;">Clear</span>
+<div class="admin-panel" id="adminArea">
+    <h3 style="font-family: 'Playfair Display';">Admin: Add New Product</h3>
+    <input type="text" id="pName" placeholder="Product Name">
+    <input type="number" id="pPrice" placeholder="Price (INR)">
+    <input type="file" id="pImage" accept="image/*">
+    <button class="btn btn-secondary" onclick="handleUpload()">Upload to Store</button>
 </div>
 
-<div class="product-grid" id="main-store"></div>
-
-<div id="cart-modal">
-    <div class="modal-content" style="padding: 25px;">
-        <h2 style="font-family:'Playfair Display'">Your Order</h2>
-        <div id="cart-items-list"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:700; margin:20px 0; font-size:1.2rem;">
-            <span>Total:</span><span id="cart-total-price"></span>
-        </div>
-        <button class="btn-buy" onclick="sendWhatsAppOrder()" style="padding:15px">SEND TO WHATSAPP</button>
-        <button onclick="closeCart()" style="width:100%; border:none; background:none; margin-top:15px; color:#888">Continue Shopping</button>
+<div class="grid" id="productGrid">
     </div>
-</div>
-
-<div id="admin-panel" style="background: var(--bg); color: var(--text); display:none; flex-direction:column; align-items:stretch; justify-content: flex-start;">
-    <div style="padding: 30px;">
-        <h2 style="font-family:'Playfair Display'">Admin Dashboard</h2>
-        <div id="admin-stats" style="font-size: 0.8rem; margin-bottom: 20px;"></div>
-        <input type="text" id="adminSearch" placeholder="Search items to edit..." onkeyup="updateAdminEditor()" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px;">
-        <div id="admin-editor-list" style="overflow-y:auto; max-height:50vh; margin-bottom:20px;"></div>
-        <button class="btn-buy" onclick="resetStock()" style="background:#444; margin-bottom:10px;">RESET ALL STOCK</button>
-        <button onclick="closeAdmin()" style="width:100%; border:none; background:none; color:var(--primary)">Exit</button>
-    </div>
-</div>
-
-<div id="story-modal">
-    <div class="modal-content">
-        <img id="story-img" src="" style="width:100%; height:250px; object-fit:cover;">
-        <div style="padding:25px;">
-            <div id="story-artisan" class="card-category"></div>
-            <h2 id="story-title" style="font-family:'Playfair Display'; margin:10px 0;"></h2>
-            <p id="story-text" style="font-size:0.9rem; color:#555; line-height:1.6; font-style:italic;"></p>
-            <button class="btn-buy" id="story-add-btn" style="padding:15px;">ADD TO ORDER</button>
-            <button onclick="document.getElementById('story-modal').style.display='none'" style="width:100%; background:none; border:none; color:#888; margin-top:15px;">Close</button>
-        </div>
-    </div>
-</div>
-
-<div id="scanner-modal">
-    <div style="width:100%; max-width:350px;">
-        <div id="reader"></div>
-        <button onclick="stopScanner()" class="btn-buy" style="margin-top:20px; background:#444;">CANCEL SCAN</button>
-    </div>
-</div>
-
-<div id="backToTop" onclick="scrollToTop()">↑</div>
-<div id="cart-fab" onclick="openCart()">VIEW ORDER (<span id="cart-count">0</span>)</div>
 
 <script>
-    const WHATSAPP = "9401941416";
-    const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
-    
-    let activeCategory = 'All';
-    let currentSort = 'new';
-    let cart = JSON.parse(localStorage.getItem('shang_cart')) || [];
-    let html5QrCode;
+    const API_URL = "http://localhost:3000/api";
+    let database = [];
 
-    // 1. DATABASE INITIALIZATION (200 ITEMS)
-    const categories = ["Textile", "Food", "Handicraft", "Spices"];
-    const names = ["Organic Tea", "Bamboo Basket", "Silk Scarf", "Ghost Pepper", "Carved Bowl", "Woven Shawl"];
-    let database = JSON.parse(localStorage.getItem('shang_v5'));
-
-    if (!database) {
-        database = [];
-        for (let i = 1; i <= 200; i++) {
-            const cat = categories[Math.floor(Math.random() * categories.length)];
-            database.push({
-                id: `SH-${1000+i}`,
-                name: `${names[Math.floor(Math.random() * names.length)]} ${i}`,
-                price: Math.floor(Math.random() * 8000) + 200,
-                type: cat,
-                stock: 15,
-                visible: true,
-                artisan: "Haflong Artisan",
-                story: "Hand-crafted using heritage techniques passed down through generations.",
-                image: `https://picsum.photos/seed/${i+10}/400/400`
-            });
+    // 1. LOAD FROM SERVER
+    async function loadStore() {
+        try {
+            const res = await fetch(`${API_URL}/products`);
+            database = await res.json();
+            displayProducts(database);
+        } catch (err) {
+            console.error("Backend offline. Connect your server.js!");
         }
     }
 
-    // 2. CORE RENDERING
-    function render() {
-        const store = document.getElementById('main-store');
-        const q = document.getElementById('searchBar').value.toLowerCase();
-        
-        document.getElementById('filter-indicator').style.display = activeCategory !== 'All' ? 'flex' : 'none';
-        document.getElementById('active-tag').innerText = activeCategory;
-
-        let filtered = database.filter(i => 
-            i.visible && 
-            i.name.toLowerCase().includes(q) && 
-            (activeCategory === 'All' || i.type === activeCategory)
-        );
-
-        if (currentSort === 'low') filtered.sort((a,b) => a.price - b.price);
-        else if (currentSort === 'high') filtered.sort((a,b) => b.price - a.price);
-
-        store.innerHTML = filtered.map(item => `
+    // 2. RENDER PRODUCTS
+    function displayProducts(products) {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = products.map(p => `
             <div class="card">
-                <img src="${item.image}" class="product-img" onclick="showStory('${item.id}')" loading="lazy">
+                <img src="${p.image || 'https://via.placeholder.com/300'}" alt="${p.name}">
                 <div class="card-info">
-                    <div class="card-category">${item.type}</div>
-                    <div class="card-title">${item.name}</div>
-                    <div class="card-price">${formatter.format(item.price)}</div>
-                    <button class="btn-buy" ${item.stock <= 0 ? 'disabled' : ''} onclick="addToCart('${item.id}')">
-                        ${item.stock <= 0 ? 'SOLD OUT' : 'ADD TO CART'}
-                    </button>
+                    <div style="font-size: 0.7rem; color: var(--accent); text-transform: uppercase;">${p.type || 'Heritage'}</div>
+                    <h3 style="margin: 10px 0;">${p.name}</h3>
+                    <div class="card-price">₹${p.price}</div>
+                    <button class="btn" onclick="buyItem('${p.name}')">ORDER VIA WHATSAPP</button>
                 </div>
             </div>
         `).join('');
     }
 
-    // 3. CART LOGIC
-    function addToCart(id) {
-        const idx = database.findIndex(p => p.id === id);
-        if(database[idx].stock > 0) {
-            database[idx].stock--;
-            cart.push(database[idx]);
-            saveData();
-            updateCartUI();
-            render();
+    // 3. SEARCH & FILTER LOGIC
+    function filterProducts() {
+        const query = document.getElementById('searchBar').value.toLowerCase();
+        const cat = document.getElementById('categoryFilter').value;
+
+        const filtered = database.filter(p => {
+            const matchesSearch = p.name.toLowerCase().includes(query);
+            const matchesCat = (cat === "All" || p.type === cat);
+            return matchesSearch && matchesCat;
+        });
+
+        displayProducts(filtered);
+    }
+
+    // 4. IMAGE UPLOAD LOGIC
+    async function handleUpload() {
+        const name = document.getElementById('pName').value;
+        const price = document.getElementById('pPrice').value;
+        const imageFile = document.getElementById('pImage').files[0];
+
+        if (!name || !price || !imageFile) return alert("Fill all fields");
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('price', price);
+        formData.append('type', document.getElementById('categoryFilter').value);
+        formData.append('image', imageFile);
+
+        const res = await fetch(`${API_URL}/admin/add`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (res.ok) {
+            alert("Uploaded Successfully!");
+            loadStore(); // Refresh
         }
     }
 
-    function removeFromCart(index) {
-        const item = cart[index];
-        const dbIdx = database.findIndex(p => p.id === item.id);
-        database[dbIdx].stock++;
-        cart.splice(index, 1);
-        saveData();
-        render();
-        cart.length === 0 ? closeCart() : openCart();
-        updateCartUI();
+    // 5. ORDER LOGIC
+    function buyItem(name) {
+        const msg = encodeURIComponent(`Hello! I would like to order the heritage item: ${name}`);
+        window.open(`https://wa.me/9401941416?text=${msg}`);
     }
-
-    function updateCartUI() {
-        const count = cart.length;
-        const fab = document.getElementById('cart-fab');
-        fab.style.display = count > 0 ? 'block' : 'none';
-        document.getElementById('cart-count').innerText = count;
-        fab.classList.add('animate-pop');
-        setTimeout(() => fab.classList.remove('animate-pop'), 300);
-    }
-
-    function openCart() {
-        const list = document.getElementById('cart-items-list');
-        const total = cart.reduce((s, i) => s + i.price, 0);
-        document.getElementById('cart-total-price').innerText = formatter.format(total);
-        list.innerHTML = cart.map((item, i) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <span style="font-size:0.9rem;">${item.name}</span>
-                <button onclick="removeFromCart(${i})" style="color:red; background:none; border:none;">✕</button>
-            </div>
-        `).join('');
-        document.getElementById('cart-modal').style.display = 'flex';
-    }
-
-    function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
-
-    function sendWhatsAppOrder() {
-        const list = cart.map(i => `• ${i.name} (${formatter.format(i.price)})`).join('%0A');
-        const total = cart.reduce((s, i) => s + i.price, 0);
-        window.open(`https://wa.me/${WHATSAPP}?text=*ORDER*%0A${list}%0A%0A*Total: ${formatter.format(total)}*`, '_blank');
-        cart = [];
-        saveData();
-        location.reload();
-    }
-
-    // 4. ADMIN LOGIC
-    function openAdmin() {
-        if (prompt("PIN:") === "1234") {
-            document.getElementById('admin-panel').style.display = 'flex';
-            updateAdminEditor();
-        }
-    }
-    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
-
-    function updateAdminEditor() {
-        const q = document.getElementById('adminSearch').value.toLowerCase();
-        const list = document.getElementById('admin-editor-list');
-        const filtered = database.filter(i => i.name.toLowerCase().includes(q) || i.id.toLowerCase().includes(q)).slice(0, 15);
-        
-        list.innerHTML = filtered.map(item => `
-            <div style="background:#f9f9f9; padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid #eee;">
-                <div style="display:flex; justify-content:space-between;">
-                    <strong>${item.id}</strong>
-                    <span onclick="toggleVisibility('${item.id}')">${item.visible ? '👁️' : '🙈'}</span>
-                </div>
-                <input type="text" value="${item.image}" onchange="updateField('${item.id}', 'image', this.value)" style="width:100%; margin:5px 0;">
-                <input type="number" value="${item.price}" onchange="updateField('${item.id}', 'price', this.value)" style="width:100%;">
-            </div>
-        `).join('');
-    }
-
-    function updateField(id, field, val) {
-        const idx = database.findIndex(p => p.id === id);
-        database[idx][field] = field === 'price' ? parseInt(val) : val;
-        saveData();
-        render();
-    }
-
-    function toggleVisibility(id) {
-        const idx = database.findIndex(p => p.id === id);
-        database[idx].visible = !database[idx].visible;
-        saveData();
-        render();
-        updateAdminEditor();
-    }
-
-    function resetStock() { database.forEach(i => i.stock = 15); saveData(); render(); }
-    function saveData() { 
-        localStorage.setItem('shang_v5', JSON.stringify(database)); 
-        localStorage.setItem('shang_cart', JSON.stringify(cart)); 
-    }
-
-    // 5. UTILS
-    function toggleMenu() {
-        document.getElementById('sideMenu').classList.toggle('active');
-        document.getElementById('menuOverlay').classList.toggle('active');
-    }
-    function filterByCategory(cat) { activeCategory = cat; toggleMenu(); render(); }
-    function setSort(s) { currentSort = s; toggleMenu(); render(); }
-    function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
-    window.onscroll = () => { document.getElementById('backToTop').style.display = window.scrollY > 500 ? 'flex' : 'none'; };
 
     // Initialize
-    updateCartUI();
-    render();
+    loadStore();
 </script>
+
 </body>
 </html>
+
