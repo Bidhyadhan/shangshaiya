@@ -2,270 +2,252 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHANGSHAIYA | Global Heritage Enterprise</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SHANGSHAIYA | Luxury Heritage</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode"></script>
+
     <style>
         :root { 
-            --primary: #722f37; --accent: #daa520; --bg: #fffcf5; 
-            --safe: #27ae60; --alert: #c0392b; --ship: #3498db; --ai: #8e44ad; 
+            --primary: #5c262d; /* Deep Black-Cherry */
+            --accent: #c5a059;  /* Muted Gold */
+            --bg: #fdfaf5;      /* Parchment */
+            --text: #1a1a1a;
+            --glass: rgba(255, 255, 255, 0.8);
         }
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; background: var(--bg); color: #333; overflow-x: hidden; }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* NAVIGATION */
-        .top-bar { background: #1a1a1a; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .lang-btn { cursor: pointer; font-size: 0.75rem; border: 1px solid #444; padding: 6px 15px; border-radius: 20px; color: #ccc; background: transparent; transition: 0.3s; }
-        .lang-btn.active { background: var(--accent); color: black; border-color: var(--accent); font-weight: bold; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            background: var(--bg); 
+            color: var(--text);
+            background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
 
-        header { background: var(--primary); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid var(--accent); }
-        .hero-sub { font-style: italic; opacity: 0.8; font-size: 0.9rem; margin-top: 5px; }
+        /* 1. MAGAZINE HEADER */
+        header { padding: 40px 20px 10px; }
+        header h1 { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 2.8rem; 
+            margin: 0; 
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+        .subtitle { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); font-weight: 600; }
 
-        .container { max-width: 1200px; margin: auto; padding: 15px; }
+        /* 2. FLOATING NAV PILL */
+        .nav-pill {
+            position: sticky;
+            top: 15px;
+            margin: 0 15px 20px;
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        #searchBar {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 0.9rem;
+        }
 
-        /* SEARCH & FILTERS (AMAZON/FLIPKART STYLE) */
-        .sticky-tools { position: sticky; top: 55px; background: var(--bg); padding: 10px 0; z-index: 999; }
-        #searchBar { width: 100%; padding: 15px 25px; border-radius: 50px; border: 2px solid #ddd; font-size: 1rem; box-sizing: border-box; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .filter-row { display: flex; gap: 10px; overflow-x: auto; padding: 15px 0; white-space: nowrap; scrollbar-width: none; }
-        .filter-row::-webkit-scrollbar { display: none; }
+        /* 3. BENTO GRID LAYOUT */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 15px;
+        }
 
-        /* PRODUCT CARDS (DECATHLON STYLE) */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: 0.3s; position: relative; border: 1px solid #eee; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-        .product-img { width: 100%; height: 220px; object-fit: cover; background: #f9f9f9; border-bottom: 1px solid #eee; }
-        .card-content { padding: 15px; }
-        .badge { position: absolute; top: 12px; left: 12px; font-size: 0.65rem; padding: 5px 12px; border-radius: 5px; color: white; font-weight: bold; text-transform: uppercase; background: var(--primary); z-index: 10; }
+        .card {
+            background: var(--glass);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+        .card:active { transform: scale(0.96); }
 
-        /* BUTTONS */
-        .btn { padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 0.95rem; transition: 0.2s; }
-        .btn-cart { background: #f39c12; color: white; }
-        .btn-wa { background: #25D366; color: white; }
-        .btn-scan { background: var(--accent); color: black; margin-bottom: 25px; }
-        .btn:active { transform: scale(0.98); }
+        .product-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 20px;
+            padding: 5px;
+        }
 
-        /* CART FLOATING ACTION BUTTON */
-        #cart-fab { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 18px 28px; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 30px rgba(114, 47, 55, 0.4); z-index: 1001; font-weight: bold; display: none; border: 2px solid var(--accent); transition: 0.3s; }
+        .card-info { padding: 12px; flex-grow: 1; }
+        .card-category { font-size: 0.6rem; text-transform: uppercase; color: var(--accent); font-weight: bold; }
+        .card-title { font-size: 1rem; margin: 5px 0; font-weight: 600; line-height: 1.2; }
+        .card-price { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin: 8px 0; }
 
-        /* SCREENSAVER */
-        #screensaver { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #722f37, #1a1a1a); color: white; z-index: 10000; text-align: center; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; }
-        .saver-logo { font-size: 4rem; letter-spacing: 12px; color: var(--accent); margin-bottom: 10px; font-family: serif; }
+        /* 4. LUXURY BUTTONS */
+        .btn-buy {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .btn-buy:disabled { background: #ccc; }
 
-        /* ADMIN SECTION */
-        .admin-only { display: none; margin-top: 50px; border-top: 4px solid var(--primary); padding: 30px 0; background: #fff; }
-        .secure-dot { position: fixed; bottom: 5px; right: 5px; width: 20px; height: 20px; opacity: 0.05; cursor: pointer; }
+        /* 5. MODALS & OVERLAYS */
+        #story-modal, #scanner-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--bg); width: 100%; max-width: 380px; border-radius: 30px;
+            overflow: hidden; animation: slideUp 0.4s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        #reader { width: 100%; border-radius: 20px; border: 4px solid var(--accent); }
+
+        /* 6. CART FAB */
+        #cart-fab {
+            position: fixed; bottom: 20px; right: 20px; left: 20px;
+            background: var(--text); color: white; padding: 18px;
+            border-radius: 20px; text-align: center; font-weight: 600;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3); display: none;
+        }
     </style>
 </head>
-<body onmousemove="resetTimer()" onclick="resetTimer()" onkeydown="resetTimer()" ontouchstart="resetTimer()">
-
-<div id="screensaver" onclick="this.style.display='none'">
-    <div class="saver-logo">SHANGSHAIYA</div>
-    <p style="font-style: italic; font-size: 1.3rem; opacity: 0.8;">Traditional Heritage. Global Excellence.</p>
-    <p style="margin-top: 60px; font-size: 0.8rem; letter-spacing: 2px; opacity: 0.5;">TOUCH TO ENTER STORE</p>
-</div>
-
-<div class="top-bar">
-    <div>
-        <button class="lang-btn active">English</button>
-        <button class="lang-btn" onclick="alert('Dimasa Language Pack Loading...')">Dimasa</button>
-    </div>
-    <div style="font-size: 0.8rem; font-weight: bold; letter-spacing: 1px;">HAFLONG | 2026</div>
-</div>
+<body>
 
 <header>
+    <div class="subtitle">Haflong Heritage</div>
     <h1>SHANGSHAIYA</h1>
-    <p class="hero-sub">Indigenous Silk • Organic Hill Produce • Heritage Crafts</p>
 </header>
 
-<div class="container">
-    <div class="sticky-tools">
-        <input type="text" id="searchBar" placeholder="Search for 'Silk', 'Chilli', 'Basket'..." onkeyup="filterItems()">
-        <div class="filter-row" id="filterContainer">
-            <button class="lang-btn active" onclick="applyFilter('All', this)">All Products</button>
-            <button class="lang-btn" onclick="applyFilter('Textile', this)">Eri Silk</button>
-            <button class="lang-btn" onclick="applyFilter('Food', this)">Organic Food</button>
-            <button class="lang-btn" onclick="applyFilter('Craft', this)">Handicrafts</button>
+<div class="nav-pill">
+    <input type="text" id="searchBar" placeholder="Search our collection..." onkeyup="render()">
+    <div onclick="startScanner()" style="color:var(--accent); font-size: 1.2rem; margin-left:10px;">📸</div>
+</div>
+
+<div class="product-grid" id="main-store"></div>
+
+<div id="story-modal">
+    <div class="modal-content">
+        <img id="story-img" src="" style="width:100%; height:250px; object-fit:cover;">
+        <div style="padding:25px;">
+            <div id="story-artisan" class="card-category"></div>
+            <h2 id="story-title" style="font-family:'Playfair Display'; margin:10px 0;"></h2>
+            <p id="story-text" style="font-size:0.9rem; color:#555; line-height:1.6; font-style:italic;"></p>
+            <button class="btn-buy" id="story-add-btn" style="padding:15px; font-size:1rem;">ADD TO ORDER</button>
+            <button onclick="document.getElementById('story-modal').style.display='none'" style="width:100%; background:none; border:none; color:#888; margin-top:15px;">Close</button>
         </div>
     </div>
+</div>
 
-    <button class="btn btn-scan" onclick="startScanner()">📸 AGENT SCANNER (QR)</button>
-    <div id="reader" style="width:100%; max-width:450px; margin: 0 auto 20px auto; display:none; border: 5px solid var(--accent); border-radius: 10px;"></div>
-
-    <div class="product-grid" id="main-store"></div>
-
-    <div id="admin-panel" class="admin-only">
-        <div class="container">
-            <h2 style="color:var(--primary);">🛡️ MASTER CONTROL PANEL</h2>
-            <div style="background:#f4f4f4; padding:20px; border-radius:10px;">
-                <button class="btn" style="background:var(--ai); color:white;" onclick="addNewItem()">➕ ADD NEW PRODUCT TO DATABASE</button>
-                <button class="btn" style="background:var(--alert); color:white; margin-top:10px;" onclick="resetDatabase()">⚠️ WIPE ALL DATA & RESET</button>
-            </div>
-        </div>
+<div id="scanner-modal">
+    <div style="width:100%; max-width:350px;">
+        <div id="reader"></div>
+        <button onclick="stopScanner()" class="btn-buy" style="margin-top:20px; background:#444;">CANCEL SCAN</button>
     </div>
 </div>
 
 <div id="cart-fab" onclick="sendWhatsAppOrder()">
-    🛒 CHECKOUT CART (<span id="cart-count">0</span>)
+    VIEW ORDER (<span id="cart-count">0</span>) & CHECKOUT
 </div>
 
-<div class="secure-dot" onclick="adminLogin()">.</div>
-
-<footer>
-    <div style="text-align:center; padding:50px 20px; background:#1a1a1a; color:white; margin-top:50px; font-size:0.8rem;">
-        <p>Verified Indigenous Enterprise | Haflong, Dima Hasao</p>
-        <p>© 2026 SHANGSHAIYA ENTERPRISE. All Rights Reserved.</p>
-    </div>
-</footer>
-
 <script>
-    const ADMIN_PASS = "123456";
-    const WHATSAPP_NUMBER = "9401941416";
+    const WHATSAPP = "9401941416";
     let cart = [];
-    let idleTimer;
+    let html5QrCode;
 
-    // 1. DATA CENTER
-    let database = JSON.parse(localStorage.getItem('shangshaiya_v2')) || [
-        {
-            id: "ERI-001", 
-            name: "Premium Eri Silk Shawl", 
-            price: 3800, 
-            type: "Textile", 
-            dye: "Natural Lac Dye", 
-            image: "https://images.unsplash.com/photo-1528813155440-17ef9765829d?auto=format&fit=crop&w=500"
-        },
-        {
-            id: "CH-99", 
-            name: "Organic King Chilli (Bhut Jolokia)", 
-            price: 350, 
-            type: "Food", 
-            dye: "N/A", 
-            image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=500"
-        },
-        {
-            id: "BM-03", 
-            name: "Smoked Bamboo Fruit Basket", 
-            price: 750, 
-            type: "Craft", 
-            dye: "Wood Smoke", 
-            image: "https://images.unsplash.com/photo-1591084728795-1149fb3a28c2?auto=format&fit=crop&w=500"
-        }
+    // Premium Database with Stories
+    let database = JSON.parse(localStorage.getItem('shang_v5')) || [
+        { id: "S1", name: "Hand-Woven Eri Silk", price: 4200, type: "Textile", stock: 5, artisan: "Liza Mech", story: "Soft as a cloud, woven over 12 days using traditional Dimasa patterns.", image: "https://images.unsplash.com/photo-1528813155440-17ef9765829d?w=600" },
+        { id: "F1", name: "King Chilli Flakes", price: 350, type: "Food", stock: 15, artisan: "Hilltop Farmers", story: "Fire-dried over bamboo smoke for that authentic Haflong heat.", image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=600" }
     ];
 
-    function saveAndRefresh() {
-        localStorage.setItem('shangshaiya_v2', JSON.stringify(database));
-        render(database);
-    }
-
-    // 2. RENDER ENGINE
-    function render(dataList) {
+    function render() {
         const store = document.getElementById('main-store');
-        store.innerHTML = dataList.map((item, index) => `
+        const q = document.getElementById('searchBar').value.toLowerCase();
+        
+        const filtered = database.filter(i => i.name.toLowerCase().includes(q));
+
+        store.innerHTML = filtered.map(item => `
             <div class="card">
-                <span class="badge">${item.type}</span>
-                <img src="${item.image || 'https://via.placeholder.com/400x250?text=Product+Image'}" class="product-img" alt="${item.name}">
-                <div class="card-content">
-                    <h3 style="margin:0 0 5px 0; font-size:1.1rem;">${item.name}</h3>
-                    <p style="color:#666; font-size:0.8rem; margin:2px 0;">Details: ${item.dye}</p>
-                    <p style="font-size:1.4rem; font-weight:bold; color:var(--primary); margin:10px 0;">₹${item.price.toLocaleString()}</p>
-                    <button class="btn btn-cart" onclick="addToCart('${item.id}')">🛒 ADD TO CART</button>
-                    <button class="btn btn-wa" style="background:#f9f9f9; color:#333; border:1px solid #ddd;" onclick="quickBuy('${item.name}')">INQUIRY</button>
+                <img src="${item.image}" class="product-img" onclick="showStory('${item.id}')">
+                <div class="card-info">
+                    <div class="card-category">${item.type}</div>
+                    <div class="card-title">${item.name}</div>
+                    <div class="card-price">₹${item.price}</div>
+                    <button class="btn-buy" ${item.stock <= 0 ? 'disabled' : ''} onclick="addToCart('${item.id}')">
+                        ${item.stock <= 0 ? 'SOLD OUT' : 'ADD TO CART'}
+                    </button>
                 </div>
             </div>
         `).join('');
     }
 
-    // 3. SEARCH & FILTERS
-    function filterItems() {
-        const query = document.getElementById('searchBar').value.toLowerCase();
-        const filtered = database.filter(i => i.name.toLowerCase().includes(query));
-        render(filtered);
+    function showStory(id) {
+        const item = database.find(i => i.id === id);
+        document.getElementById('story-img').src = item.image;
+        document.getElementById('story-title').innerText = item.name;
+        document.getElementById('story-artisan').innerText = "By " + item.artisan;
+        document.getElementById('story-text').innerText = item.story;
+        document.getElementById('story-add-btn').onclick = () => { addToCart(id); document.getElementById('story-modal').style.display='none'; };
+        document.getElementById('story-modal').style.display = 'flex';
     }
 
-    function applyFilter(type, btn) {
-        document.querySelectorAll('#filterContainer .lang-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if(type === 'All') return render(database);
-        const filtered = database.filter(i => i.type === type);
-        render(filtered);
-    }
-
-    // 4. CART SYSTEM
     function addToCart(id) {
-        const item = database.find(p => p.id === id);
-        cart.push(item);
-        document.getElementById('cart-fab').style.display = 'block';
-        document.getElementById('cart-count').innerText = cart.length;
-        
-        // Feedback animation
-        const fab = document.getElementById('cart-fab');
-        fab.style.transform = "scale(1.2)";
-        setTimeout(() => fab.style.transform = "scale(1)", 200);
+        const idx = database.findIndex(p => p.id === id);
+        if(database[idx].stock > 0) {
+            database[idx].stock--;
+            cart.push(database[idx]);
+            document.getElementById('cart-fab').style.display = 'block';
+            document.getElementById('cart-count').innerText = cart.length;
+            localStorage.setItem('shang_v5', JSON.stringify(database));
+            render();
+        }
     }
 
     function sendWhatsAppOrder() {
-        const total = cart.reduce((sum, item) => sum + item.price, 0);
-        const list = cart.map(item => `• ${item.name} (₹${item.price})`).join('%0A');
-        const message = `SHANGSHAIYA ORDER:%0A%0A${list}%0A%0ATOTAL AMOUNT: ₹${total}%0A%0APlease confirm availability!`;
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+        const list = cart.map(i => `• ${i.name} (₹${i.price})`).join('%0A');
+        const total = cart.reduce((s, i) => s + i.price, 0);
+        window.open(`https://wa.me/${WHATSAPP}?text=*SHANGSHAIYA ORDER*%0A${list}%0A%0A*Total: ₹${total}*`, '_blank');
         cart = [];
         document.getElementById('cart-fab').style.display = 'none';
     }
 
-    function quickBuy(name) {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=I+am+interested+in:+${name}`, '_blank');
-    }
-
-    // 5. SCREENSAVER TIMER
-    function resetTimer() {
-        clearTimeout(idleTimer);
-        document.getElementById('screensaver').style.display = 'none';
-        idleTimer = setTimeout(() => {
-            document.getElementById('screensaver').style.display = 'flex';
-        }, 60000); 
-    }
-
-    // 6. ADMIN UTILITIES
-    function adminLogin() {
-        if(prompt("Enter Admin Master Key:") === ADMIN_PASS) {
-            document.getElementById('admin-panel').style.display = 'block';
-            window.scrollTo(0, document.body.scrollHeight);
-        }
-    }
-
-    function addNewItem() {
-        const name = prompt("Product Name:");
-        const price = parseInt(prompt("Price (INR):"));
-        const type = prompt("Category (Textile/Food/Craft):");
-        const image = prompt("Image URL (Paste direct link):");
-        
-        if(name && price) {
-            database.push({ id: "ID-" + Date.now(), name, price, type, dye: "Indigenous", image });
-            saveAndRefresh();
-        }
-    }
-
-    function resetDatabase() {
-        if(confirm("This will delete all custom products. Continue?")) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
-
     function startScanner() {
-        const reader = document.getElementById('reader');
-        reader.style.display = 'block';
-        const scanner = new Html5Qrcode("reader");
-        scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (decodedText) => {
-            alert("QR Code Recognized: " + decodedText);
-            scanner.stop();
-            reader.style.display = 'none';
-        }).catch(err => alert("Camera error: " + err));
+        document.getElementById('scanner-modal').style.display = 'flex';
+        html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
+            showStory(txt);
+            stopScanner();
+        });
     }
 
-    // INITIALIZE
-    render(database);
-    resetTimer();
-</script>
+    function stopScanner() {
+        if(html5QrCode) html5QrCode.stop();
+        document.getElementById('scanner-modal').style.display = 'none';
+    }
 
+    render();
+</script>
 </body>
 </html>
-
