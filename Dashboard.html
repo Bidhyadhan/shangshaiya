@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SHANGSHAIYA | Heritage Enterprise</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root { --amazon-dark: #232f3e; --amazon-orange: #febd69; --primary-silk: #722f37; --bg: #eaeded; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); padding-bottom: 70px; }
+        header { background: var(--amazon-dark); color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.4rem; font-weight: bold; text-decoration: none; color: white; }
+        .logo span { color: var(--amazon-orange); }
+
+        .container { padding: 15px; max-width: 1200px; margin: auto; }
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* Product Cards */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .card { background: white; padding: 12px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-height: 320px; }
+        .card img { width: 100%; height: 160px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; }
+        .price { color: #B12704; font-weight: bold; font-size: 1.2rem; margin: 5px 0; }
+
+        /* UI Elements */
+        .buy-btn { background: #ffd814; border: 1px solid #fcd200; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .buy-btn:active { background: #f7ca00; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        /* Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; padding: 10px 0; z-index: 1000; }
+        .nav-item { flex: 1; text-align: center; color: var(--amazon-dark); text-decoration: none; font-size: 0.75rem; cursor: pointer; }
+        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 2px; }
+
+        /* Order List */
+        .order-card { background: white; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .Pending { background: #fff3cd; color: #856404; }
+        .Shipped { background: #d1ecf1; color: #0c5460; }
+        .Delivered { background: #d4edda; color: #155724; }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="#" class="logo" onclick="showSection('home')">shang<span>shaiya</span></a>
+    <div id="user-display" style="font-size: 0.8rem;">Guest</div>
+</header>
+
+<div class="container">
+    
+    <div id="home-section" class="section active">
+        <div class="product-grid" id="product-list">Loading Silk store...</div>
+    </div>
+
+    <div id="profile-section" class="section">
+        <div id="auth-box">
+            <h3>Login / Register</h3>
+            <input type="email" id="auth-email" placeholder="Email">
+            <input type="password" id="auth-pass" placeholder="Password">
+            <button class="buy-btn" onclick="handleAuth('login')">Login</button>
+            <button class="buy-btn" style="background:#eee; margin-top:10px;" onclick="handleAuth('reg')">Register Account</button>
+        </div>
+        <div id="user-dashboard" style="display:none;">
+            <h3>Your Order History</h3>
+            <div id="my-orders">No orders found.</div>
+            <button onclick="auth.signOut(); location.reload();" style="color:red; border:none; background:none; margin-top:30px;">Logout</button>
+        </div>
+    </div>
+
+    <div id="admin-section" class="section">
+        <h3>Admin Management</h3>
+        <div style="background:#fff; padding:15px; border-radius:8px; border:1px solid #ddd; margin-bottom:20px;">
+            <h4>Add New Product</h4>
+            <input type="text" id="p-name" placeholder="Item Name">
+            <input type="number" id="p-price" placeholder="Price (₹)">
+            <input type="text" id="p-img" placeholder="Image URL (Unsplash/Imgur link)">
+            <button class="buy-btn" onclick="adminAddProduct()" style="background:var(--amazon-dark); color:white;">Add to Cloud Store</button>
+        </div>
+        <h4>Customer Orders</h4>
+        <div id="admin-orders-list">Loading...</div>
+    </div>
+
+    <div id="cart-tray" class="section" style="background:white; min-height:80vh;">
+        <h3>Your Basket</h3>
+        <div id="cart-items-list"></div>
+        <div id="cart-total" style="font-weight:bold; font-size:1.2rem; margin:15px 0;">Total: ₹0</div>
+        <hr>
+        <h4>Delivery Address</h4>
+        <input type="text" id="ship-name" placeholder="Full Name">
+        <input type="text" id="ship-addr" placeholder="Detailed Address (Haflong/Assam)">
+        <input type="tel" id="ship-phone" placeholder="WhatsApp Number">
+        <button class="buy-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item" onclick="showSection('home')"><i class="fa fa-home"></i>Home</div>
+    <div class="nav-item" onclick="showSection('profile')"><i class="fa fa-user"></i>You</div>
+    <div class="nav-item" onclick="showSection('cart')"><i class="fa fa-shopping-cart"></i>Cart</div>
+    <div class="nav-item" onclick="checkAdminAccess()"><i class="fa fa-user-shield"></i>Admin</div>
+</nav>
+
+<script>
+    // 1. FIREBASE CONFIG (REPLACE THESE WITH YOUR ACTUAL KEYS)
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        databaseURL: "YOUR_DB_URL",
+        projectId: "YOUR_PROJECT_ID",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    let cart = [];
+    let isAdmin = false;
+
+    // 2. NAVIGATION
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id + '-section').classList.add('active');
+        if(id === 'cart') renderCart();
+    }
+
+    // 3. PRODUCT SYNC (REALTIME)
+    function syncProducts() {
+        db.ref('products').on('value', snap => {
+            const products = snap.val();
+            const list = document.getElementById('product-list');
+            list.innerHTML = "";
+            for (let id in products) {
+                let p = products[id];
+                list.innerHTML += `
+                    <div class="card">
+                        <img src="${p.img}">
+                        <div>
+                            <b>${p.name}</b>
+                            <div class="price">₹${p.price}</div>
+                        </div>
+                        <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
+                        ${isAdmin ? `<button onclick="db.ref('products/${id}').remove()" style="color:red; border:none; background:none; font-size:0.7rem; margin-top:5px;">Remove Item</button>` : ''}
+                    </div>
+                `;
+            }
+        });
+    }
+
+    // 4. AUTHENTICATION
+    function handleAuth(type) {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+        if(type === 'reg') auth.createUserWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+        else auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+    }
+
+    auth.onAuthStateChanged(user => {
+        if(user) {
+            document.getElementById('user-display').innerText = user.email;
+            document.getElementById('auth-box').style.display = 'none';
+            document.getElementById('user-dashboard').style.display = 'block';
+            loadUserHistory(user.uid);
+        }
+    });
+
+    // 5. CART & ORDERING
+    function addToCart(name, price) {
+        cart.push({name, price});
+        alert(name + " added!");
+    }
+
+    function renderCart() {
+        const list = document.getElementById('cart-items-list');
+        let total = 0;
+        list.innerHTML = cart.map(item => {
+            total += item.price;
+            return `<div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span>${item.name}</span><b>₹${item.price}</b>
+            </div>`;
+        }).join('');
+        document.getElementById('cart-total').innerText = "Total: ₹" + total;
+    }
+
+    function placeOrder() {
+        const user = auth.currentUser;
+        if(!user) return alert("Log in to place orders!");
+        if(cart.length === 0) return alert("Cart is empty");
+
+        const order = {
+            userId: user.uid,
+            email: user.email,
+            items: cart.map(i => i.name).join(", "),
+            total: cart.reduce((s, i) => s + i.price, 0),
+            address: document.getElementById('ship-addr').value,
+            phone: document.getElementById('ship-phone').value,
+            status: "Pending",
+            timestamp: Date.now()
+        };
+
+        db.ref('orders').push(order).then(() => {
+            alert("Order Placed Successfully!");
+            cart = [];
+            showSection('profile');
+        });
+    }
+
+    // 6. HISTORY & ADMIN
+    function loadUserHistory(uid) {
+        db.ref('orders').orderByChild('userId').equalTo(uid).on('value', snap => {
+            const orders = snap.val();
+            let html = "";
+            for(let id in orders) {
+                let o = orders[id];
+                html += `<div class="order-card">
+                    <b>Order ID: ...${id.slice(-5)}</b> 
+                    <span class="status-badge ${o.status}">${o.status}</span><br>
+                    <small>${o.items}</small>
+                </div>`;
+            }
+            document.getElementById('my-orders').innerHTML = html || "No orders found.";
+        });
+    }
+
+    function checkAdminAccess() {
+        const key = prompt("Enter Admin Secret Key:");
+        if(key === "123456") {
+            isAdmin = true;
+            showSection('admin');
+            loadAdminOrders();
+            syncProducts(); // Refresh to show delete buttons
+        }
+    }
+
+    function loadAdminOrders() {
+        db.ref('orders').on('value', snap => {
+            const orders = snap.val();
+            let html = "";
+            for(let id in orders) {
+                let o = orders[id];
+                html += `<div class="order-card" style="border-left:5px solid var(--amazon-dark)">
+                    <b>Customer: ${o.email}</b><br>
+                    Addr: ${o.address} | Phone: ${o.phone}<br>
+                    Items: ${o.items}<br>
+                    Current Status: <b class="${o.status}">${o.status}</b><br>
+                    <button onclick="updateStatus('${id}', 'Shipped')">Ship</button>
+                    <button onclick="updateStatus('${id}', 'Delivered')">Deliver</button>
+                </div>`;
+            }
+            document.getElementById('admin-orders-list').innerHTML = html;
+        });
+    }
+
+    function updateStatus(id, stat) { db.ref('orders/' + id).update({status: stat}); }
+
+    function adminAddProduct() {
+        const name = document.getElementById('p-name').value;
+        const price = document.getElementById('p-price').value;
+        const img = document.getElementById('p-img').value;
+        db.ref('products').push({name, price: parseInt(price), img: img || 'https://via.placeholder.com/150'});
+        alert("Product Uploaded!");
+    }
+
+    window.onload = syncProducts;
+</script>
+
+</body>
+</html>
+
