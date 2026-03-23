@@ -10,9 +10,9 @@
 
     <style>
         :root { 
-            --primary: #5c262d; /* Deep Black-Cherry */
-            --accent: #c5a059;  /* Muted Gold */
-            --bg: #fdfaf5;      /* Parchment */
+            --primary: #5c262d; 
+            --accent: #c5a059;  
+            --bg: #fdfaf5;      
             --text: #1a1a1a;
             --glass: rgba(255, 255, 255, 0.8);
         }
@@ -26,114 +26,84 @@
             color: var(--text);
             background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
             background-size: 20px 20px;
+            overflow-x: hidden;
         }
 
-        /* 1. MAGAZINE HEADER */
-        header { padding: 40px 20px 10px; }
-        header h1 { 
-            font-family: 'Playfair Display', serif; 
-            font-size: 2.8rem; 
-            margin: 0; 
-            color: var(--primary);
-            letter-spacing: -1px;
-        }
-        .subtitle { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); font-weight: 600; }
+        /* ADMIN & UI ELEMENTS */
+        .admin-dot { position: absolute; top: 15px; right: 15px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; opacity: 0.1; z-index: 5000; cursor: pointer; }
+        #pull-loader { width: 100%; height: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: height 0.3s; }
+        .spinner { width: 24px; height: 24px; border: 3px solid rgba(197, 160, 89, 0.2); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* 2. FLOATING NAV PILL */
-        .nav-pill {
-            position: sticky;
-            top: 15px;
-            margin: 0 15px 20px;
-            background: rgba(26, 26, 26, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 50px;
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
-            z-index: 1000;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        #searchBar {
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 10px;
-            width: 100%;
-            outline: none;
-            font-size: 0.9rem;
-        }
+        /* HEADER & NAV */
+        header { padding: 40px 20px 10px; position: relative; }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; margin: 0 0 0 35px; color: var(--primary); letter-spacing: -1px; }
+        .subtitle { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); font-weight: 600; margin-left: 35px; }
 
-        /* 3. BENTO GRID LAYOUT */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 15px;
-        }
+        .menu-toggle { position: absolute; top: 45px; left: 20px; z-index: 2100; cursor: pointer; }
+        .hamburger-line { width: 22px; height: 2px; background: var(--primary); margin: 5px 0; transition: 0.3s; }
 
-        .card {
-            background: var(--glass);
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease;
-        }
-        .card:active { transform: scale(0.96); }
+        .side-menu { position: fixed; top: 0; left: -100%; width: 80%; max-width: 300px; height: 100%; background: var(--bg); z-index: 2050; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 100px 30px; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+        .side-menu.active { left: 0; }
+        .side-menu h3 { font-family: 'Playfair Display'; color: var(--accent); margin: 20px 0 10px; }
+        .side-menu a { display: block; color: var(--primary); text-decoration: none; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px; }
 
-        .product-img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 20px;
-            padding: 5px;
-        }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: none; z-index: 2040; backdrop-filter: blur(2px); }
+        .menu-overlay.active { display: block; }
 
-        .card-info { padding: 12px; flex-grow: 1; }
+        /* SEARCH & GRID */
+        .nav-pill { position: sticky; top: 15px; margin: 0 15px 10px; background: rgba(26, 26, 26, 0.9); backdrop-filter: blur(10px); border-radius: 50px; padding: 8px 15px; display: flex; align-items: center; z-index: 1000; }
+        #searchBar { background: transparent; border: none; color: white; padding: 10px; width: 100%; outline: none; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px 15px 120px; }
+        .card { background: var(--glass); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: transform 0.3s; }
+        .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 20px; padding: 5px; }
+        .card-info { padding: 12px; }
         .card-category { font-size: 0.6rem; text-transform: uppercase; color: var(--accent); font-weight: bold; }
-        .card-title { font-size: 1rem; margin: 5px 0; font-weight: 600; line-height: 1.2; }
-        .card-price { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin: 8px 0; }
+        .card-title { font-size: 0.9rem; margin: 5px 0; font-weight: 600; min-height: 2.2em; }
+        .card-price { font-size: 1rem; font-weight: 700; color: var(--primary); margin: 8px 0; }
 
-        /* 4. LUXURY BUTTONS */
-        .btn-buy {
-            width: 100%;
-            padding: 10px;
-            border-radius: 12px;
-            border: none;
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
+        /* BUTTONS & MODALS */
+        .btn-buy { width: 100%; padding: 10px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
         .btn-buy:disabled { background: #ccc; }
 
-        /* 5. MODALS & OVERLAYS */
-        #story-modal, #scanner-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;
-            backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background: var(--bg); width: 100%; max-width: 380px; border-radius: 30px;
-            overflow: hidden; animation: slideUp 0.4s ease;
-        }
+        #story-modal, #scanner-modal, #cart-modal, #admin-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--bg); width: 100%; max-width: 380px; border-radius: 30px; overflow-y: auto; max-height: 85vh; animation: slideUp 0.4s ease; }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        #reader { width: 100%; border-radius: 20px; border: 4px solid var(--accent); }
-
-        /* 6. CART FAB */
-        #cart-fab {
-            position: fixed; bottom: 20px; right: 20px; left: 20px;
-            background: var(--text); color: white; padding: 18px;
-            border-radius: 20px; text-align: center; font-weight: 600;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3); display: none;
-        }
+        /* FABs */
+        #cart-fab { position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--text); color: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 600; display: none; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        #backToTop { position: fixed; bottom: 95px; right: 20px; width: 45px; height: 45px; background: var(--glass); border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .animate-pop { animation: pop 0.3s ease; }
     </style>
 </head>
 <body>
+
+<div class="admin-dot" onclick="openAdmin()"></div>
+
+<div id="pull-loader"><div class="spinner"></div></div>
+
+<div class="menu-toggle" onclick="toggleMenu()">
+    <div class="hamburger-line"></div>
+    <div class="hamburger-line" style="width: 15px;"></div>
+    <div class="hamburger-line"></div>
+</div>
+
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+<nav class="side-menu" id="sideMenu">
+    <h3>Categories</h3>
+    <a href="#" onclick="filterByCategory('All')">All Products</a>
+    <a href="#" onclick="filterByCategory('Textile')">Textiles</a>
+    <a href="#" onclick="filterByCategory('Food')">Food & Spices</a>
+    <a href="#" onclick="filterByCategory('Handicraft')">Handicraft</a>
+    <h3>Sort By</h3>
+    <a href="#" onclick="setSort('low')">Price: Low to High</a>
+    <a href="#" onclick="setSort('high')">Price: High to Low</a>
+    <a href="#" onclick="setSort('new')">Newest Arrivals</a>
+</nav>
 
 <header>
     <div class="subtitle">Haflong Heritage</div>
@@ -141,11 +111,39 @@
 </header>
 
 <div class="nav-pill">
-    <input type="text" id="searchBar" placeholder="Search our collection..." onkeyup="render()">
+    <input type="text" id="searchBar" placeholder="Search collection..." onkeyup="render()">
     <div onclick="startScanner()" style="color:var(--accent); font-size: 1.2rem; margin-left:10px;">📸</div>
 </div>
 
+<div id="filter-indicator" style="display: none; padding: 0 20px 10px; align-items: center; gap: 10px;">
+    <span id="active-tag" style="background: var(--accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600;"></span>
+    <span onclick="filterByCategory('All')" style="font-size: 0.7rem; color: var(--primary); text-decoration: underline;">Clear</span>
+</div>
+
 <div class="product-grid" id="main-store"></div>
+
+<div id="cart-modal">
+    <div class="modal-content" style="padding: 25px;">
+        <h2 style="font-family:'Playfair Display'">Your Order</h2>
+        <div id="cart-items-list"></div>
+        <div style="display:flex; justify-content:space-between; font-weight:700; margin:20px 0; font-size:1.2rem;">
+            <span>Total:</span><span id="cart-total-price"></span>
+        </div>
+        <button class="btn-buy" onclick="sendWhatsAppOrder()" style="padding:15px">SEND TO WHATSAPP</button>
+        <button onclick="closeCart()" style="width:100%; border:none; background:none; margin-top:15px; color:#888">Continue Shopping</button>
+    </div>
+</div>
+
+<div id="admin-panel" style="background: var(--bg); color: var(--text); display:none; flex-direction:column; align-items:stretch; justify-content: flex-start;">
+    <div style="padding: 30px;">
+        <h2 style="font-family:'Playfair Display'">Admin Dashboard</h2>
+        <div id="admin-stats" style="font-size: 0.8rem; margin-bottom: 20px;"></div>
+        <input type="text" id="adminSearch" placeholder="Search items to edit..." onkeyup="updateAdminEditor()" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px;">
+        <div id="admin-editor-list" style="overflow-y:auto; max-height:50vh; margin-bottom:20px;"></div>
+        <button class="btn-buy" onclick="resetStock()" style="background:#444; margin-bottom:10px;">RESET ALL STOCK</button>
+        <button onclick="closeAdmin()" style="width:100%; border:none; background:none; color:var(--primary)">Exit</button>
+    </div>
+</div>
 
 <div id="story-modal">
     <div class="modal-content">
@@ -154,7 +152,7 @@
             <div id="story-artisan" class="card-category"></div>
             <h2 id="story-title" style="font-family:'Playfair Display'; margin:10px 0;"></h2>
             <p id="story-text" style="font-size:0.9rem; color:#555; line-height:1.6; font-style:italic;"></p>
-            <button class="btn-buy" id="story-add-btn" style="padding:15px; font-size:1rem;">ADD TO ORDER</button>
+            <button class="btn-buy" id="story-add-btn" style="padding:15px;">ADD TO ORDER</button>
             <button onclick="document.getElementById('story-modal').style.display='none'" style="width:100%; background:none; border:none; color:#888; margin-top:15px;">Close</button>
         </div>
     </div>
@@ -167,34 +165,65 @@
     </div>
 </div>
 
-<div id="cart-fab" onclick="sendWhatsAppOrder()">
-    VIEW ORDER (<span id="cart-count">0</span>) & CHECKOUT
-</div>
+<div id="backToTop" onclick="scrollToTop()">↑</div>
+<div id="cart-fab" onclick="openCart()">VIEW ORDER (<span id="cart-count">0</span>)</div>
 
 <script>
     const WHATSAPP = "9401941416";
-    let cart = [];
+    const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+    
+    let activeCategory = 'All';
+    let currentSort = 'new';
+    let cart = JSON.parse(localStorage.getItem('shang_cart')) || [];
     let html5QrCode;
 
-    // Premium Database with Stories
-    let database = JSON.parse(localStorage.getItem('shang_v5')) || [
-        { id: "S1", name: "Hand-Woven Eri Silk", price: 4200, type: "Textile", stock: 5, artisan: "Liza Mech", story: "Soft as a cloud, woven over 12 days using traditional Dimasa patterns.", image: "https://images.unsplash.com/photo-1528813155440-17ef9765829d?w=600" },
-        { id: "F1", name: "King Chilli Flakes", price: 350, type: "Food", stock: 15, artisan: "Hilltop Farmers", story: "Fire-dried over bamboo smoke for that authentic Haflong heat.", image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=600" }
-    ];
+    // 1. DATABASE INITIALIZATION (200 ITEMS)
+    const categories = ["Textile", "Food", "Handicraft", "Spices"];
+    const names = ["Organic Tea", "Bamboo Basket", "Silk Scarf", "Ghost Pepper", "Carved Bowl", "Woven Shawl"];
+    let database = JSON.parse(localStorage.getItem('shang_v5'));
 
+    if (!database) {
+        database = [];
+        for (let i = 1; i <= 200; i++) {
+            const cat = categories[Math.floor(Math.random() * categories.length)];
+            database.push({
+                id: `SH-${1000+i}`,
+                name: `${names[Math.floor(Math.random() * names.length)]} ${i}`,
+                price: Math.floor(Math.random() * 8000) + 200,
+                type: cat,
+                stock: 15,
+                visible: true,
+                artisan: "Haflong Artisan",
+                story: "Hand-crafted using heritage techniques passed down through generations.",
+                image: `https://picsum.photos/seed/${i+10}/400/400`
+            });
+        }
+    }
+
+    // 2. CORE RENDERING
     function render() {
         const store = document.getElementById('main-store');
         const q = document.getElementById('searchBar').value.toLowerCase();
         
-        const filtered = database.filter(i => i.name.toLowerCase().includes(q));
+        document.getElementById('filter-indicator').style.display = activeCategory !== 'All' ? 'flex' : 'none';
+        document.getElementById('active-tag').innerText = activeCategory;
+
+        let filtered = database.filter(i => 
+            i.visible && 
+            i.name.toLowerCase().includes(q) && 
+            (activeCategory === 'All' || i.type === activeCategory)
+        );
+
+        if (currentSort === 'low') filtered.sort((a,b) => a.price - b.price);
+        else if (currentSort === 'high') filtered.sort((a,b) => b.price - a.price);
 
         store.innerHTML = filtered.map(item => `
             <div class="card">
-                <img src="${item.image}" class="product-img" onclick="showStory('${item.id}')">
+                <img src="${item.image}" class="product-img" onclick="showStory('${item.id}')" loading="lazy">
                 <div class="card-info">
                     <div class="card-category">${item.type}</div>
                     <div class="card-title">${item.name}</div>
-                    <div class="card-price">₹${item.price}</div>
+                    <div class="card-price">${formatter.format(item.price)}</div>
                     <button class="btn-buy" ${item.stock <= 0 ? 'disabled' : ''} onclick="addToCart('${item.id}')">
                         ${item.stock <= 0 ? 'SOLD OUT' : 'ADD TO CART'}
                     </button>
@@ -203,50 +232,121 @@
         `).join('');
     }
 
-    function showStory(id) {
-        const item = database.find(i => i.id === id);
-        document.getElementById('story-img').src = item.image;
-        document.getElementById('story-title').innerText = item.name;
-        document.getElementById('story-artisan').innerText = "By " + item.artisan;
-        document.getElementById('story-text').innerText = item.story;
-        document.getElementById('story-add-btn').onclick = () => { addToCart(id); document.getElementById('story-modal').style.display='none'; };
-        document.getElementById('story-modal').style.display = 'flex';
-    }
-
+    // 3. CART LOGIC
     function addToCart(id) {
         const idx = database.findIndex(p => p.id === id);
         if(database[idx].stock > 0) {
             database[idx].stock--;
             cart.push(database[idx]);
-            document.getElementById('cart-fab').style.display = 'block';
-            document.getElementById('cart-count').innerText = cart.length;
-            localStorage.setItem('shang_v5', JSON.stringify(database));
+            saveData();
+            updateCartUI();
             render();
         }
     }
 
-    function sendWhatsAppOrder() {
-        const list = cart.map(i => `• ${i.name} (₹${i.price})`).join('%0A');
+    function removeFromCart(index) {
+        const item = cart[index];
+        const dbIdx = database.findIndex(p => p.id === item.id);
+        database[dbIdx].stock++;
+        cart.splice(index, 1);
+        saveData();
+        render();
+        cart.length === 0 ? closeCart() : openCart();
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const count = cart.length;
+        const fab = document.getElementById('cart-fab');
+        fab.style.display = count > 0 ? 'block' : 'none';
+        document.getElementById('cart-count').innerText = count;
+        fab.classList.add('animate-pop');
+        setTimeout(() => fab.classList.remove('animate-pop'), 300);
+    }
+
+    function openCart() {
+        const list = document.getElementById('cart-items-list');
         const total = cart.reduce((s, i) => s + i.price, 0);
-        window.open(`https://wa.me/${WHATSAPP}?text=*SHANGSHAIYA ORDER*%0A${list}%0A%0A*Total: ₹${total}*`, '_blank');
+        document.getElementById('cart-total-price').innerText = formatter.format(total);
+        list.innerHTML = cart.map((item, i) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <span style="font-size:0.9rem;">${item.name}</span>
+                <button onclick="removeFromCart(${i})" style="color:red; background:none; border:none;">✕</button>
+            </div>
+        `).join('');
+        document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
+
+    function sendWhatsAppOrder() {
+        const list = cart.map(i => `• ${i.name} (${formatter.format(i.price)})`).join('%0A');
+        const total = cart.reduce((s, i) => s + i.price, 0);
+        window.open(`https://wa.me/${WHATSAPP}?text=*ORDER*%0A${list}%0A%0A*Total: ${formatter.format(total)}*`, '_blank');
         cart = [];
-        document.getElementById('cart-fab').style.display = 'none';
+        saveData();
+        location.reload();
     }
 
-    function startScanner() {
-        document.getElementById('scanner-modal').style.display = 'flex';
-        html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
-            showStory(txt);
-            stopScanner();
-        });
+    // 4. ADMIN LOGIC
+    function openAdmin() {
+        if (prompt("PIN:") === "1234") {
+            document.getElementById('admin-panel').style.display = 'flex';
+            updateAdminEditor();
+        }
+    }
+    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+
+    function updateAdminEditor() {
+        const q = document.getElementById('adminSearch').value.toLowerCase();
+        const list = document.getElementById('admin-editor-list');
+        const filtered = database.filter(i => i.name.toLowerCase().includes(q) || i.id.toLowerCase().includes(q)).slice(0, 15);
+        
+        list.innerHTML = filtered.map(item => `
+            <div style="background:#f9f9f9; padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid #eee;">
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>${item.id}</strong>
+                    <span onclick="toggleVisibility('${item.id}')">${item.visible ? '👁️' : '🙈'}</span>
+                </div>
+                <input type="text" value="${item.image}" onchange="updateField('${item.id}', 'image', this.value)" style="width:100%; margin:5px 0;">
+                <input type="number" value="${item.price}" onchange="updateField('${item.id}', 'price', this.value)" style="width:100%;">
+            </div>
+        `).join('');
     }
 
-    function stopScanner() {
-        if(html5QrCode) html5QrCode.stop();
-        document.getElementById('scanner-modal').style.display = 'none';
+    function updateField(id, field, val) {
+        const idx = database.findIndex(p => p.id === id);
+        database[idx][field] = field === 'price' ? parseInt(val) : val;
+        saveData();
+        render();
     }
 
+    function toggleVisibility(id) {
+        const idx = database.findIndex(p => p.id === id);
+        database[idx].visible = !database[idx].visible;
+        saveData();
+        render();
+        updateAdminEditor();
+    }
+
+    function resetStock() { database.forEach(i => i.stock = 15); saveData(); render(); }
+    function saveData() { 
+        localStorage.setItem('shang_v5', JSON.stringify(database)); 
+        localStorage.setItem('shang_cart', JSON.stringify(cart)); 
+    }
+
+    // 5. UTILS
+    function toggleMenu() {
+        document.getElementById('sideMenu').classList.toggle('active');
+        document.getElementById('menuOverlay').classList.toggle('active');
+    }
+    function filterByCategory(cat) { activeCategory = cat; toggleMenu(); render(); }
+    function setSort(s) { currentSort = s; toggleMenu(); render(); }
+    function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
+    window.onscroll = () => { document.getElementById('backToTop').style.display = window.scrollY > 500 ? 'flex' : 'none'; };
+
+    // Initialize
+    updateCartUI();
     render();
 </script>
 </body>
